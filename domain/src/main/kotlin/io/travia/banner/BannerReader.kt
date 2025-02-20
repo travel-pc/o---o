@@ -1,10 +1,14 @@
 package io.travia.banner
 
-class BannerReader : BannerRepository{
+import org.springframework.stereotype.Component
 
+@Component
+class BannerReader(
+    private val bannerRepository: BannerRepository
+) {
 
-    override fun readAll(): List<Banner> {
-        TODO("Not yet implemented")
+    fun readAll(): List<Banner> {
+        return bannerRepository.readAll()
     }
 
 }

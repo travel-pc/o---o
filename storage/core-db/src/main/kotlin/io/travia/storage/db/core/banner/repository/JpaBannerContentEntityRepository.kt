@@ -4,7 +4,5 @@ import io.travia.storage.db.core.banner.persistent.BannerContentEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
-
-@Repository
 interface JpaBannerContentEntityRepository : JpaRepository<BannerContentEntity, Long> {
 }

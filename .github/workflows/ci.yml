@@ -1,0 +1,108 @@
+name: travel
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: travel-api
+      IMAGE_TAG: 0.0.1
+      DOCKER_HUB_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_HUB_REPO: travel-docker-hub
+      CONTAINER_NAME: travel-app
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Lint
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: ktlintCheck
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Test with Gradle
+        run: ./gradlew test
+
+      - name: rest docs
+        run: ./gradlew --info :core:application:asciidoctor
+
+      - name: Test Result Report
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: 'build/test-results/**/*.xml'
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${DOCKER_HUB_USER}/${DOCKER_HUB_REPO}:${IMAGE_TAG} .
+          docker push ${DOCKER_HUB_USER}/${DOCKER_HUB_REPO}:${IMAGE_TAG}
+
+      - name: Deploy application via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          envs: IMAGE_TAG,DOCKER_HUB_USER,DOCKER_HUB_REPO,CONTAINER_NAME  # 환경 변수 전달
+          script: |
+            echo "🔹 Checking environment variables in SSH"
+            echo "DOCKER_HUB_USER=${DOCKER_HUB_USER}"
+            echo "DOCKER_HUB_REPO=${DOCKER_HUB_REPO}"
+            echo "IMAGE_TAG=${IMAGE_TAG}"
+            echo "CONTAINER_NAME=travel-app"
+            
+            
+            echo "🔹 Checking if container '${CONTAINER_NAME}' exists"
+
+            if [ "$(docker ps -q -f name=${CONTAINER_NAME})" ]; then
+            echo "Stopping existing container..."
+            docker stop ${CONTAINER_NAME}
+            fi
+  
+
+            if [ "$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
+            echo "Removing existing container..."
+            docker rm ${CONTAINER_NAME}
+            fi
+  
+
+            echo "🔹 Pulling the latest Docker image"
+            docker pull "${DOCKER_HUB_USER}/${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+            echo "🚀 Running new container"
+            docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_HUB_USER}/${DOCKER_HUB_REPO}:${IMAGE_TAG}
+
+            echo "📋 Listing running containers"
+            docker ps -a
+
+            echo "✅ Deployment complete"

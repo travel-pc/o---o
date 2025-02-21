@@ -17,7 +17,7 @@ class BannerController (
 ){
 
     @GetMapping
-    fun readAll(): ResponseEntity<List<ApiResponse<ReadAllBannerResponse>>> {
+    fun readAll(): ResponseEntity<ApiResponse<List<ReadAllBannerResponse>>> {
         val response = readBannerService.readAll().map {
            ReadAllBannerResponse(
                 id = it.id,
@@ -36,6 +36,6 @@ class BannerController (
                 }
             )
         }
-        return ResponseEntity.ok(response.map { ApiResponse.success(it) })
+        return ResponseEntity.ok(ApiResponse.success(response))
     }
 }

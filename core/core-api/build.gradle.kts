@@ -13,4 +13,5 @@ dependencies {
     implementation(project(":storage:core-db"))
     testImplementation(project(":tests:api-docs"))
     implementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation(kotlin("test"))
 }

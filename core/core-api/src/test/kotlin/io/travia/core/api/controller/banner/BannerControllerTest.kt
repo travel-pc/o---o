@@ -10,7 +10,6 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import io.travia.test.api.RestDocsTest
 import io.travia.test.api.RestDocsUtils.requestPreprocessor
 import io.travia.test.api.RestDocsUtils.responsePreprocessor
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus

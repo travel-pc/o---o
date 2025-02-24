@@ -3,6 +3,7 @@ package io.travia.storage.db.core.banner.repository
 import io.travia.banner.Banner
 import io.travia.banner.BannerContent
 import io.travia.banner.BannerRepository
+import io.travia.storage.db.core.banner.persistent.BannerEntity
 import org.springframework.stereotype.Repository
 
 
@@ -33,6 +34,4 @@ class BannerEntityRepository(
             }
         }
     }
-
-
 }

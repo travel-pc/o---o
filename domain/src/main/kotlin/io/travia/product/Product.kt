@@ -13,9 +13,9 @@ data class Product(
     val manufacturer: String,
     var parts: MutableList<Parts>,
     var stockStatus: StockStatus = StockStatus.IN_STOCK,
-    val shippingMethods: List<ShippingMethod>,
-    val imageUrls: List<String>,
-    val detailImageUrls: List<Any>,
+    val shippingMethods: MutableList<ShippingMethod>,
+    val imageUrls: MutableList<String>,
+    val detailImageUrls: MutableList<String>,
 ){
 
     fun updateStockStatus() {

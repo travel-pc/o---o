@@ -48,7 +48,7 @@ class ProductEntityRepository(
 
             imageUrls = productImageEntity.map {
                 it.imageUrl
-            },
+            }.toMutableList(),
 
             shippingMethods = shippingEntity.map {
                 ShippingMethod(
@@ -57,11 +57,11 @@ class ProductEntityRepository(
                     additionalCost = it.additionalCost,
                     isFree = it.isFree
                 )
-            },
+            }.toMutableList(),
 
             detailImageUrls = productDetailImageEntity.map {
                 it.imageUrl
-            }
+            }.toMutableList()
 
         )
     }

@@ -1,8 +1,9 @@
-name: travel
 
-on:
-  pull_request:
-    branches: [ "main" ]
+#name: travel
+
+#on:
+# pull_request:
+#    branches: [ "main" ]
 
 
 permissions: write-all

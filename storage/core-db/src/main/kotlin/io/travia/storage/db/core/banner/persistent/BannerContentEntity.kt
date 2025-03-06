@@ -33,18 +33,4 @@ class BannerContentEntity (
 
 ) : BaseEntity() {
 
-
-
-
-    companion object {
-        fun fixture(bannerContentId: Long, bannerId: Long, title: String, description: String, imageUrl: String): BannerContentEntity {
-            return BannerContentEntity(
-                bannerId = bannerId,
-                bannerContentId = bannerContentId,
-                title = title,
-                description = description,
-                imageUrl = imageUrl,
-            )
-        }
-    }
 }

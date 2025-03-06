@@ -1,6 +1,6 @@
 package io.travia.core.api.controller.banner
 
-import io.travia.banner.ReadBannerService
+import io.travia.banner.BannerService
 import io.travia.core.api.controller.banner.response.ReadAllBannerContentResponse
 import io.travia.core.api.controller.banner.response.ReadAllBannerResponse
 import io.travia.core.support.response.ApiResponse
@@ -11,16 +11,16 @@ import org.springframework.http.ResponseEntity
 
 
 @RestController
-@RequestMapping("/api/v1/banners")
+@RequestMapping("/api/v1")
 class BannerController (
-    private val readBannerService: ReadBannerService
+    private val bannerService: BannerService
 ){
 
-    @GetMapping
+    @GetMapping("/banners/with-contents")
     fun readAll(): ResponseEntity<ApiResponse<List<ReadAllBannerResponse>>> {
-        val response = readBannerService.readAll().map {
+        val response = bannerService.readAll().map {
            ReadAllBannerResponse(
-                id = it.id,
+                id = it.bannerId,
                 description = it.description,
                 gradient = it.gradient,
                 moveUrl = it.moveUrl,
@@ -28,7 +28,7 @@ class BannerController (
                 title = it.title,
                 contents = it.contents.map {
                     bannerContent -> ReadAllBannerContentResponse(
-                        id = bannerContent.id,
+                        id = bannerContent.bannerContentId,
                         description = bannerContent.description,
                         imageUrl = bannerContent.imageUrl,
                         title = bannerContent.title
@@ -36,6 +36,7 @@ class BannerController (
                 }
             )
         }
+
         return ResponseEntity.ok(ApiResponse.success(response))
     }
 }

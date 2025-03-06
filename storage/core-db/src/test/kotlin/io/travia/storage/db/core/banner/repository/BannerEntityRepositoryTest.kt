@@ -28,22 +28,22 @@ class BannerEntityRepositoryTest (
             val result = bannerEntityRepository.readAll()
 
             assertThat(result).hasSize(2)
-                .extracting("id", "title")
+                .extracting("bannerId", "title")
                 .containsExactlyInAnyOrder(
                     tuple(bannerId1, "배너 테스트 1"),
                     tuple(bannerId2, "배너 테스트 2")
                 )
 
-            assertThat(result.find { it.id == bannerId1 }?.contents)
+            assertThat(result.find { it.bannerId == bannerId1 }?.contents)
                 .hasSize(3)
-                .extracting("id", "title", "description", "imageUrl")
+                .extracting("bannerContentId", "title", "description", "imageUrl")
                 .containsExactlyInAnyOrder(
                     tuple(1L, "배너 하위 1", "배너 하위 1", "이미지 1"),
                     tuple(2L, "배너 하위 2", "배너 하위 2", "이미지 2"),
                     tuple(3L, "배너 하위 3", "배너 하위 3", "이미지 3")
                 )
 
-            assertThat(result.find { it.id == bannerId2 }?.contents)
+            assertThat(result.find { it.bannerId == bannerId2 }?.contents)
                 .isEmpty()
         }
 

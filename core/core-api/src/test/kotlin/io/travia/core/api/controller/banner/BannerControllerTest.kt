@@ -5,7 +5,7 @@ import io.mockk.mockk
 import io.restassured.http.ContentType
 import io.travia.banner.Banner
 import io.travia.banner.BannerContent
-import io.travia.banner.ReadBannerService
+import io.travia.banner.BannerService
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import io.travia.test.api.RestDocsTest
 import io.travia.test.api.RestDocsUtils.requestPreprocessor
@@ -19,23 +19,23 @@ import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 
 
 class BannerControllerTest : RestDocsTest() {
-    private lateinit var readBannerService: ReadBannerService
+    private lateinit var bannerService: BannerService
     private lateinit var bannerController: BannerController
 
     @BeforeEach
     fun setUp() {
-        readBannerService = mockk(relaxUnitFun = true)
-        bannerController = BannerController(readBannerService)
+        bannerService = mockk(relaxUnitFun = true)
+        bannerController = BannerController(bannerService)
         mockMvc = mockController(bannerController)
     }
 
     @Test
     fun should_banner_detail_list_when_all_200() {
         every {
-            readBannerService.readAll()
+            bannerService.readAll()
         } returns listOf(
             Banner(
-                id = 1L,
+                bannerId = 1L,
                 title = "2025년 혜택 알아보기!",
                 description = "조립 피씨 전문 트래블 피씨",
                 notice = "다음 혜택은 특정 기간 조건에 따라 적용됩니다!",
@@ -43,13 +43,13 @@ class BannerControllerTest : RestDocsTest() {
                 moveUrl = "https://example.com",
                 contents = listOf(
                     BannerContent(
-                        id = 1L,
+                        bannerContentId = 1L,
                         title = "커피 기프티콘 증정",
                         description = "포토 리뷰 작성 시",
                         imageUrl = "https://img.danawa.com.image"
                     ),
                     BannerContent(
-                        id = 2L,
+                        bannerContentId = 2L,
                         title = "신학기 특별 세일",
                         description = "새로운 신학기 시즌을 응원해요",
                         imageUrl = "https://img.danawa.com.image"
@@ -61,12 +61,12 @@ class BannerControllerTest : RestDocsTest() {
         given()
             .contentType(ContentType.JSON)
             .`when`()
-            .get("api/v1/banners")
+            .get("api/v1/banners/with-contents")
             .then()
             .statusCode(HttpStatus.OK.value())
             .apply(
                 document(
-                    "read-banner-all",
+                    "read-banners-with-contents",
                     requestPreprocessor(),
                     responsePreprocessor(),
                     responseFields(

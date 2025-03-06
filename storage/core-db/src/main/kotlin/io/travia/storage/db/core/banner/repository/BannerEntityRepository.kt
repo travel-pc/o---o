@@ -20,7 +20,7 @@ class BannerEntityRepository(
         val bannerContentEntityMaps = queryDslBannerContentRepository.findByBannerIds(bannerIds);
         return banners.map { bannerEntity ->
             Banner(
-                id = bannerEntity.bannerId,
+                bannerId = bannerEntity.bannerId,
                 title = bannerEntity.title,
                 description = bannerEntity.description,
                 notice = bannerEntity.notice,
@@ -28,10 +28,9 @@ class BannerEntityRepository(
                 moveUrl = bannerEntity.moveUrl,
                 contents = bannerContentEntityMaps[bannerEntity.bannerId]?.map {
                     it -> BannerContent(
-                        id = it.bannerContentId,
+                        bannerContentId = it.bannerContentId,
                         title = it.title,
-                        description
-                        = it.description,
+                        description = it.description,
                         imageUrl = it.imageUrl,
                     )
                 } ?: emptyList()

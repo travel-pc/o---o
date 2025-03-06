@@ -1,5 +1,6 @@
 package io.travia.storage.db.core.product.persistent
 
+import io.travia.PartsType
 import io.travia.StockStatus
 import io.travia.storage.db.core.BaseEntity
 import jakarta.persistence.Column
@@ -34,6 +35,10 @@ class PartsEntity(
     @Column(name = "stock_status")
     val stockStatus: StockStatus,
 
-) : BaseEntity() {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "parts_type")
+    val partsType: PartsType,
+
+    ) : BaseEntity() {
 
 }

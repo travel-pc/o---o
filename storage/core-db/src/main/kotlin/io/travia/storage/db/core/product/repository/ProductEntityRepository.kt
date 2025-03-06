@@ -42,8 +42,9 @@ class ProductEntityRepository(
                     isOption = it.isOption,
                     imageUrl = it.partsEntity.imageUrl,
                     stockStatus = it.partsEntity.stockStatus,
+                    partsType = it.partsEntity.partsType
                 )
-            },
+            }.toMutableList(),
 
             imageUrls = productImageEntity.map {
                 it.imageUrl

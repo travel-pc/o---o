@@ -5,6 +5,7 @@ include(
     "core:core-enum",
     "support:logging",
     "storage:core-db",
+    "common:snowflake",
     "domain",
     "tests:api-docs",
 )

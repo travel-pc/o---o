@@ -11,7 +11,7 @@ class ProductService (
 ){
     fun read(productId: Long): Product {
         return productRepository.read(productId).apply {
-            updateStockStatus()
+            decideStockStatus()
             calculateDiscountPrice()
             sortByParts()
         }

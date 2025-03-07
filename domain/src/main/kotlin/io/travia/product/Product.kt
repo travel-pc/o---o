@@ -18,10 +18,6 @@ data class Product(
     val detailImageUrls: MutableList<String>,
 ){
 
-    fun updateStockStatus() {
-        this.stockStatus = determineStockStatus()
-    }
-
     /**
      * 할인가격 계산
      */
@@ -41,27 +37,28 @@ data class Product(
         )
     }
 
+    fun decideStockStatus() {
+        this.stockStatus = calculateStockStatus()
+    }
     /**
      * 부품 단종, 재고없음이 많은 순으로 상품 상태 변경 함수
      */
-    private fun determineStockStatus(): StockStatus {
-        val statusCount = parts.groupingBy { it.stockStatus }.eachCount()
+    fun calculateStockStatus(): StockStatus {
+        val statusCount = parts
+            .asSequence()
+            .filter { !it.isOption }
+            .groupingBy { it.stockStatus }
+            .eachCount()
 
         val discontinuedCount = statusCount[StockStatus.DISCONTINUED] ?: 0
         val outOfStockCount = statusCount[StockStatus.OUT_OF_STOCK] ?: 0
-        val inStockCount = statusCount[StockStatus.IN_STOCK] ?: 0
-
-        val mostFrequentStatus = listOf(
-            StockStatus.DISCONTINUED to discontinuedCount,
-            StockStatus.OUT_OF_STOCK to outOfStockCount,
-            StockStatus.IN_STOCK to inStockCount
-        ).maxByOrNull { it.second }?.first ?: StockStatus.IN_STOCK
-
-        return if (discontinuedCount == outOfStockCount) {
-            StockStatus.OUT_OF_STOCK
-        } else {
-            mostFrequentStatus
+        return when {
+            discontinuedCount == 0 && outOfStockCount == 0 -> StockStatus.IN_STOCK
+            discontinuedCount > outOfStockCount -> StockStatus.DISCONTINUED
+            else -> StockStatus.OUT_OF_STOCK
         }
     }
+
+
 
 }

@@ -41,7 +41,8 @@ class ProductController(
                     spec = it.spec,
                     isOption = it.isOption,
                     partsType = it.partsType,
-                    imageUrl = it.imageUrl
+                    imageUrl = it.imageUrl,
+                    stockStatus = it.stockStatus
                 )
             }.toMutableList(),
             shippingMethods = product.shippingMethods.map {

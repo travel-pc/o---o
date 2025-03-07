@@ -28,6 +28,7 @@ data class ReadPartsResponse(
     val isOption: Boolean,
     val partsType: PartsType,
     val imageUrl: String,
+    val stockStatus: StockStatus,
 )
 
 data class ReadShippingMethodResponse(
